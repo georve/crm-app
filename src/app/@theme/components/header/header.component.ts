@@ -60,7 +60,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
     private layoutService: LayoutService,
     private breakpointService: NbMediaBreakpointsService,
     private rippleService: RippleService,
-    private authService: NbAuthService
+    private authService: NbAuthService,
   ) {
     this.materialTheme$ = this.themeService.onThemeChange()
       .pipe(map(theme => {
