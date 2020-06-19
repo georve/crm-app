@@ -11,6 +11,8 @@ import { CoreModule } from './@core/core.module';
 import { ThemeModule } from './@theme/theme.module';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+import { NbPasswordAuthStrategy, NbAuthModule, NbAuthJWTToken } from '@nebular/auth';
+import {AuthModule} from './auth/auth.module';
 import {
   NbChatModule,
   NbDatepickerModule,
@@ -20,7 +22,7 @@ import {
   NbToastrModule,
   NbWindowModule,
 } from '@nebular/theme';
-
+import { AuthGuard } from './auth-guard.service';
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -41,6 +43,36 @@ import {
       messageGoogleMapKey: 'AIzaSyA_wNuCzia92MAmdLRzmqitRGvCF7wCZPY',
     }),
     CoreModule.forRoot(),
+    AuthModule,
+    NbAuthModule.forRoot({
+      strategies: [
+        NbPasswordAuthStrategy.setup({
+          name: 'email',
+          baseEndpoint:'http://localhost:3000',
+          token: {
+            class: NbAuthJWTToken,
+            key: "token", // this parameter tells where to look for the token
+          },
+          login:{
+            endpoint:'/users/login',
+            method:'post',
+            redirect: {
+              success: '/page/',
+              failure: null, // stay on the same page
+            },
+          },
+          register:{
+            endpoint:'/users/sign-in',
+            method:'post',
+          }
+        }),
+      ],
+      forms: {},
+    }), 
+    
+  ],
+  providers: [
+    AuthGuard
   ],
   bootstrap: [AppComponent],
 })
